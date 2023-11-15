@@ -1,30 +1,17 @@
 import { Router } from "express";
-
-import type { ThingOptinalId } from "../../../types";
+import type { ThingOptinalId } from "../../../types.js";
 import things from "../data/things.js";
+import ThingsController from "../controller/ThingsController.js";
 
 const thingsRouter = Router();
+const thingsController = new ThingsController();
 
-thingsRouter.get("/", (_req, res) => {
-  res.status(200);
-  res.json({ things });
-});
+thingsRouter.get("/", thingsController.getThings);
 
-thingsRouter.get("/:idThing", (req, res) => {
-  const id = Number(req.params.idThing);
-
-  const thing = things.find((thing) => thing.id === id);
-
-  if (!thing) {
-    res.status(404).json({});
-    return;
-  }
-
-  res.status(200).json(thing);
-});
+thingsRouter.get("/:idThing", thingsController.getThingsById);
 
 thingsRouter.delete("/:idThing", (req, res) => {
-  const id = Number(req.params.idThing);
+  const id = +req.params.idThing;
 
   const thingIndex = things.findIndex((thing) => thing.id === id);
 
